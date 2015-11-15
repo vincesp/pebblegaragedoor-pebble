@@ -15,20 +15,20 @@
     "resources": {
         "media": [
             {
-                "file": "images/icon-key.png",
-                "name": "ICON_KEY",
+                "file": "images/icon-reload.png",
+                "name": "ICON_RELOAD",
                 "type": "png"
             },
             {
-                "file": "images/icon-reload.png",
-                "name": "ICON_RELOAD",
+                "file": "images/icon-key.png",
+                "name": "ICON_KEY",
                 "type": "png"
             }
         ]
     },
     "sdkVersion": "2",
     "shortName": "Garage door",
-    "uuid": "",
+    "uuid": "e585028f-e470-4506-82b6-0b503574dbe0",
     "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
