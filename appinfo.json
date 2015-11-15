@@ -28,6 +28,7 @@
     },
     "sdkVersion": "2",
     "shortName": "Garage door",
+    "uuid": "",
     "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
