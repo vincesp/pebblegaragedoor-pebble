@@ -18,6 +18,8 @@ var myGarageLocation = 'Santa Barbara,us';
 var herokuUrl = 'https://your-instance.herokuapp.com/keepout!';
 ```
 
+You also might want to generate APP UUID for your up, if you like.
+
 ## Todo
 
 * Nice menu icon
