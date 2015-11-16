@@ -116,6 +116,7 @@ static DataBindingConfig modelMap[] = {
 };
 
 static void modelChanged(PropertyName propertyName, const char* const value) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "modelChanged: %d = %s", propertyName, value);
   DataBindingConfig* pConfig = &modelMap[propertyName];
   snprintf(pConfig->buffer, sizeof(pConfig->buffer), pConfig->format, value);
   text_layer_set_text(*pConfig->text_layer, pConfig->buffer);
@@ -123,11 +124,12 @@ static void modelChanged(PropertyName propertyName, const char* const value) {
 }
 
 static void up_single_click_handler(ClickRecognizerRef recognizer, void *context) {
-  controller_ping();
+  text_layer_set_text(s_ping_msg_layer, "?");
   controller_getWeather();
 }
 
 static void down_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+  text_layer_set_text(s_trigger_msg_layer, "Sending …");
   controller_garageDoor();
 }
 
@@ -139,7 +141,7 @@ static void update_time() {
   // Write the current hours and minutes into a buffer
   static char s_buffer[8];
   strftime(s_buffer, sizeof(s_buffer), clock_is_24h_style() ?
-                                          "%H:%M" : "%I:%M", tick_time);
+           "%H:%M" : "%I:%M", tick_time);
 
   // Display this time on the TextLayer
   text_layer_set_text(s_time_layer, s_buffer);
@@ -157,7 +159,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   
   if (msg_hide_countdown) {
     if (!--msg_hide_countdown) {
-      text_layer_set_text(s_trigger_msg_layer, "");
+      controller_setmodel(trigger_msg, "");
     }
   }
 }

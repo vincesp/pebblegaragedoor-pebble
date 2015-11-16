@@ -5,11 +5,17 @@ var myGarageLocation = 'Santa Barbara,us';
 //Configure your Heroku instance and secret
 var herokuUrl = 'https://your-instance.herokuapp.com/keepout!';
 
-function xhrRequest(url, type, callback) {
+function xhrRequest(url, type, callback, fail) {
   var xhr = new XMLHttpRequest();
   xhr.onload = function () {
     callback(this.responseText);
   };
+  
+  if (fail) {
+    xhr.addEventListener("error", fail);
+    xhr.addEventListener("abort", fail);
+  }
+
   xhr.open(type, url);
   xhr.send();
 }
@@ -23,11 +29,12 @@ function sendAppMessage(msg) {
     function(e) {
       console.log("Error sending message to Pebble!", e);
     }
-  );  
+  );
 }
 
 function getWeather() {
   console.log("getWeather");
+  ping();
   // Construct URL
   var url = 'http://api.openweathermap.org/data/2.5/weather?q=' + myGarageLocation + '&appid=' + myAPIKey;
 
@@ -53,37 +60,53 @@ function getWeather() {
       msg.KEY_CONDITIONS = json.weather[0].description;      
       console.log("Conditions are " + msg.KEY_CONDITIONS);
       
-      // Assemble dictionary using our keys
       sendAppMessage(msg);
     }      
   );
 }
 
+function checkResponseText(responseText, errorText) {
+  return responseText.length >= 32 ? errorText : responseText;
+}
+
 function triggerGarageDoor() {
-  console.log("trigger");
   xhrRequest(
     herokuUrl + '/trigger',
     'GET',
     function (responseText) {
       console.log(responseText);
       sendAppMessage({
-        "KEY_TRIGGER_MSG": responseText
+        KEY_TRIGGER_MSG: checkResponseText(responseText, 'Error')
       });
-    });
+    },
+    function (e) {
+      console.log(e);
+      sendAppMessage({
+        KEY_TRIGGER_MSG: 'Error'
+      });
+    }
+  );
 }
 
 function ping() {
-  console.log("ping");
   xhrRequest(
     herokuUrl + '/check',
     'GET',
     function (responseText) {
       console.log(responseText);
       sendAppMessage({
-        "KEY_PING_MGS": responseText,
-        "KEY_TRIGGER_MSG": ""
+        KEY_PING_MGS: checkResponseText(responseText, '!'),
+        KEY_TRIGGER_MSG: ''
       });
-    });
+    },
+    function (e) {
+      console.log(e);
+      sendAppMessage({
+        KEY_PING_MGS: '!',
+        KEY_TRIGGER_MSG: ''
+      });
+    }
+  );
 }
 
 // Listen for when the watchface is opened
@@ -93,7 +116,6 @@ Pebble.addEventListener('ready',
 
     // Get the initial weather
     getWeather();
-    ping();
   }
 );
 
@@ -107,6 +129,6 @@ var commandMap = {
 Pebble.addEventListener('appmessage',
   function(e) {
     console.log('Received message: ' + JSON.stringify(e.payload));
-    commandMap[e.payload.KEY_COMMAND]();
+    if (e.payload.KEY_COMMAND) commandMap[e.payload.KEY_COMMAND]();
   }                     
 );

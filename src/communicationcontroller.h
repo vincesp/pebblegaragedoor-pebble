@@ -7,6 +7,8 @@ typedef void (*ModelChanged)(PropertyName propertyName, const char* const value)
 
 void controller_on_modelchanged(ModelChanged callback);
 
+void controller_setmodel(PropertyName propertyName, const char* const value);
+
 void controller_getWeather();
 
 void controller_ping();

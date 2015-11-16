@@ -19,7 +19,7 @@ const PropertyName property_map[] = {
 static ModelChanged modelChangedCallback = NULL;
 
 static AppSync s_sync;
-static uint8_t s_sync_buffer[255];
+static uint8_t s_sync_buffer[300];
 
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
   if (!modelChangedCallback) return;
@@ -27,7 +27,7 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
 }
 
 static void sync_error_handler(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "Sync Error %d", app_message_error);
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Sync Error dict %d app %d", dict_error, app_message_error);
 }
 
 static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
@@ -76,6 +76,14 @@ void controller_init() {
 
 void controller_on_modelchanged(ModelChanged callback) {
   modelChangedCallback = callback;
+}
+
+void controller_setmodel(PropertyName propertyName, const char* const value) {
+  Tuplet values[] = {
+    TupletCString(propertyName, value)
+  };
+  app_sync_set(&s_sync, values, ARRAY_LENGTH(values));
+  modelChangedCallback(propertyName, value);
 }
 
 void controller_getWeather() {
