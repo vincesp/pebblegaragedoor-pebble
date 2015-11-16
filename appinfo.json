@@ -1,9 +1,10 @@
 {
     "appKeys": {
-        "KEY_COMMAND": 4,
+        "KEY_COMMAND": 5,
         "KEY_CONDITIONS": 1,
         "KEY_PING_MGS": 2,
         "KEY_TEMPERATURE": 0,
+        "KEY_TEMPERATURE_US": 4,
         "KEY_TRIGGER_MSG": 3
     },
     "capabilities": [

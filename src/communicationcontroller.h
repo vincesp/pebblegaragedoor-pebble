@@ -1,6 +1,6 @@
 #pragma once
 typedef enum {
-  temperature, conditions, ping_msg, trigger_msg
+  temperature, conditions, ping_msg, trigger_msg, temperature_us
 } PropertyName;
 
 typedef void (*ModelChanged)(PropertyName propertyName, const char* const value);

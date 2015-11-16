@@ -34,22 +34,27 @@ function getWeather() {
   // Send request to OpenWeatherMap
   xhrRequest(url, 'GET', 
     function(responseText) {
+      var msg = {};
+      
       // responseText contains a JSON object with weather info
       var json = JSON.parse(responseText);
 
       // Temperature in Kelvin requires adjustment
-      var temperature = String(Math.round((json.main.temp - 273.15) * 10) / 10);
-      console.log("Temperature is " + temperature);
+      msg.KEY_TEMPERATURE = String(Math.round((json.main.temp - 273.15) * 10) / 10);
+      console.log("Temperature is " + msg.KEY_TEMPERATURE);
+      
+      // Special treatment for local US unit
+      msg.KEY_TEMPERATURE_US = 
+        json.sys.country.toLowerCase() === 'us' ?
+        Math.round((json.main.temp - 273.15) * 1.8 + 32) + ' °F' :
+        '';
 
       // Conditions
-      var conditions = json.weather[0].main;      
-      console.log("Conditions are " + conditions);
+      msg.KEY_CONDITIONS = json.weather[0].description;      
+      console.log("Conditions are " + msg.KEY_CONDITIONS);
       
       // Assemble dictionary using our keys
-      sendAppMessage({
-        "KEY_TEMPERATURE": temperature,
-        "KEY_CONDITIONS": conditions
-      });
+      sendAppMessage(msg);
     }      
   );
 }

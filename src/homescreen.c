@@ -10,10 +10,12 @@ static GFont s_res_bitham_42_medium_numbers;
 static GFont s_res_gothic_24_bold;
 static GFont s_res_gothic_28_bold;
 static GFont s_res_bitham_42_bold;
+static GFont s_res_gothic_28;
 static ActionBarLayer *s_actionbar_layer;
 static TextLayer *s_time_layer;
 static TextLayer *s_conditions_layer;
 static TextLayer *s_trigger_msg_layer;
+static TextLayer *s_temperature_us_layer;
 static TextLayer *s_temperature_layer;
 static TextLayer *s_ping_msg_layer;
 
@@ -29,6 +31,7 @@ static void initialise_ui(void) {
   s_res_gothic_24_bold = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
   s_res_gothic_28_bold = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
   s_res_bitham_42_bold = fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD);
+  s_res_gothic_28 = fonts_get_system_font(FONT_KEY_GOTHIC_28);
   // s_actionbar_layer
   s_actionbar_layer = action_bar_layer_create();
   action_bar_layer_add_to_window(s_actionbar_layer, s_window);
@@ -58,8 +61,16 @@ static void initialise_ui(void) {
   text_layer_set_font(s_trigger_msg_layer, s_res_gothic_28_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_trigger_msg_layer);
   
+  // s_temperature_us_layer
+  s_temperature_us_layer = text_layer_create(GRect(61, 47, 60, 28));
+  text_layer_set_background_color(s_temperature_us_layer, GColorClear);
+  text_layer_set_text(s_temperature_us_layer, " ");
+  text_layer_set_text_alignment(s_temperature_us_layer, GTextAlignmentRight);
+  text_layer_set_font(s_temperature_us_layer, s_res_gothic_28);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_temperature_us_layer);
+  
   // s_temperature_layer
-  s_temperature_layer = text_layer_create(GRect(3, 47, 121, 28));
+  s_temperature_layer = text_layer_create(GRect(3, 47, 61, 28));
   text_layer_set_background_color(s_temperature_layer, GColorClear);
   text_layer_set_text(s_temperature_layer, " ");
   text_layer_set_font(s_temperature_layer, s_res_gothic_28_bold);
@@ -80,6 +91,7 @@ static void destroy_ui(void) {
   text_layer_destroy(s_time_layer);
   text_layer_destroy(s_conditions_layer);
   text_layer_destroy(s_trigger_msg_layer);
+  text_layer_destroy(s_temperature_us_layer);
   text_layer_destroy(s_temperature_layer);
   text_layer_destroy(s_ping_msg_layer);
   gbitmap_destroy(s_res_icon_reload);
@@ -99,7 +111,8 @@ static DataBindingConfig modelMap[] = {
   {.text_layer = &s_temperature_layer, .format = "%s °C"},
   {.text_layer = &s_conditions_layer, .format = "%s"},
   {.text_layer = &s_ping_msg_layer, .format = "%s"},
-  {.text_layer = &s_trigger_msg_layer, .format = "%s"}
+  {.text_layer = &s_trigger_msg_layer, .format = "%s"},
+  {.text_layer = &s_temperature_us_layer, .format = "%s"}
 };
 
 static void modelChanged(PropertyName propertyName, const char* const value) {

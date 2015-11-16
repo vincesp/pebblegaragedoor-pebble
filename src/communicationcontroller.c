@@ -5,14 +5,15 @@
 #define KEY_CONDITIONS 1
 #define KEY_PING_MGS 2
 #define KEY_TRIGGER_MSG 3
-#define KEY_COMMAND 4
+#define KEY_TEMPERATURE_US 4
+#define KEY_COMMAND 5
 
 #define COMMAND_WEATHER 1
 #define COMMAND_GARAGEDOOR 2
 #define COMMAND_PING 3
 
 const PropertyName property_map[] = {
-  temperature, conditions, ping_msg, trigger_msg
+  temperature, conditions, ping_msg, trigger_msg, temperature_us
 };
 
 static ModelChanged modelChangedCallback = NULL;
@@ -65,7 +66,8 @@ void controller_init() {
     TupletCString(KEY_TEMPERATURE, ""),
     TupletCString(KEY_CONDITIONS, "Weather …"),
     TupletCString(KEY_PING_MGS, "?"),
-    TupletCString(KEY_TRIGGER_MSG, "")
+    TupletCString(KEY_TRIGGER_MSG, ""),
+    TupletCString(KEY_TEMPERATURE_US, "")
   };
 
   // Begin using AppSync
